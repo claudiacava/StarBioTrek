@@ -1,8 +1,7 @@
 citHeader("To cite StarBioTrek in publications use:")
 
 citEntry(entry = "article",
-         title        = "StarBioTrek 
-    miRNA data",
+         title        = "StarBioTrek",
          author       = personList(as.person("Claudia Cava"),
                                    as.person("Isabella Castiglioni")
          ),
