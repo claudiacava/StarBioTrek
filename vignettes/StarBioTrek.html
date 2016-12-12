@@ -10,9 +10,9 @@
 
 <meta name="author" content="Claudia Cava, Isabella Castiglioni" />
 
-<meta name="date" content="2016-10-13" />
+<meta name="date" content="2016-12-12" />
 
-<title>Working with StarTrek package</title>
+<title>Working with StarBioTrek package</title>
 
 
 
@@ -73,9 +73,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 <div id="header">
-<h1 class="title">Working with StarTrek package</h1>
+<h1 class="title">Working with StarBioTrek package</h1>
 <h4 class="author"><em>Claudia Cava, Isabella Castiglioni</em></h4>
-<h4 class="date"><em>2016-10-13</em></h4>
+<h4 class="date"><em>2016-12-12</em></h4>
 </div>
 
 <h1>Contents</h1>
@@ -88,9 +88,11 @@ document.addEventListener("DOMContentLoaded", function() {
 <li><a href="#getnetdata-searching-network-data-for-download"><code>getNETdata</code>: Searching network data for download</a></li>
 </ul></li>
 <li><a href="#integration-data-integration-between-kegg-pathway-and-network-data"><code>Integration data</code>: Integration between KEGG pathway and network data</a><ul>
+<li><a href="#path_net-network-of-interacting-genes-for-each-pathway-according-a-network-type-phintcolocgenintpathshpd"><code>path_net</code>: Network of interacting genes for each pathway according a network type (PHint,COloc,GENint,PATH,SHpd)</a></li>
 <li><a href="#list_path_net-list-of-interacting-genes-for-each-pathway-list-of-genes-according-a-network-type-phintcolocgenintpathshpd"><code>list_path_net</code>: List of interacting genes for each pathway (list of genes) according a network type (PHint,COloc,GENint,PATH,SHpd)</a></li>
 </ul></li>
 <li><a href="#pathway-summary-indexes-score-for-each-pathway"><code>Pathway summary indexes</code>: Score for each pathway</a><ul>
+<li><a href="#ge_matrix-get-human-kegg-pathway-data-and-a-gene-expression-matrix-in-order-to-obtain-a-matrix-with-the-gene-expression-for-only-genes-given-containing-in-the-pathways-given-in-input-by-the-user."><code>GE_matrix</code>: Get human KEGG pathway data and a gene expression matrix in order to obtain a matrix with the gene expression for only genes given containing in the pathways given in input by the user.</a></li>
 <li><a href="#average-average-of-genes-for-each-pathway-starting-from-a-matrix-of-gene-expression"><code>average</code>: Average of genes for each pathway starting from a matrix of gene expression</a></li>
 <li><a href="#st_dv-standard-deviations-of-genes-for-each-pathway-starting-from-a-matrix-of-gene-expression"><code>st_dv</code>: Standard deviations of genes for each pathway starting from a matrix of gene expression</a></li>
 </ul></li>
@@ -108,13 +110,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>Motivation: New technologies have made possible to identify marker gene signatures. However, gene expression-based signatures present some limitations because they do not consider metabolic role of the genes and are affected by genetic heterogeneity across patient cohorts. Considering the activity of entire pathways rather than the expression levels of individual genes can be a way to exceed these limits. This tool <code>StarTrek</code> presents some methodologies to measure pathway activity and cross-talk among pathways integrating also the information of network and TCGA data. New measures are under development.</p>
+<p>Motivation: New technologies have made possible to identify marker gene signatures. However, gene expression-based signatures present some limitations because they do not consider metabolic role of the genes and are affected by genetic heterogeneity across patient cohorts. Considering the activity of entire pathways rather than the expression levels of individual genes can be a way to exceed these limits. This tool <code>StarBioTrek</code> presents some methodologies to measure pathway activity and cross-talk among pathways integrating also the information of network and TCGA data. New measures are under development.</p>
 </div>
 <div id="installation" class="section level1">
 <h1>Installation</h1>
 <p>To install use the code below.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">source</span>(<span class="st">&quot;https://bioconductor.org/biocLite.R&quot;</span>)
-<span class="kw">biocLite</span>(<span class="st">&quot;StarTrek&quot;</span>)</code></pre></div>
+<span class="kw">biocLite</span>(<span class="st">&quot;StarBioTrek&quot;</span>)</code></pre></div>
 </div>
 <div id="get-data-get-kegg-pathway-network-and-tcga-data" class="section level1">
 <h1><code>Get data</code>: Get KEGG pathway, network and TCGA data</h1>
@@ -159,19 +161,16 @@ document.addEventListener("DOMContentLoaded", function() {
 <li><strong>sens_syst </strong> Sensory_system</li>
 </ul>
 <p>The following code is an example to download the pathways involved in Transcription:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">path&lt;-<span class="kw">getKEGGdata</span>(<span class="dt">KEGG_path=</span><span class="st">&quot;Transcript&quot;</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">patha&lt;-<span class="kw">getKEGGdata</span>(<span class="dt">KEGG_path=</span><span class="st">&quot;Transcript&quot;</span>)</code></pre></div>
 <p>For example the group Transcript contains different pathways:</p>
 <table>
 <caption>List of patwhays for the group Transcript</caption>
 <tbody>
 <tr class="odd">
-<td align="left">RNA polymerase - Homo sapiens (human)</td>
+<td align="left">Cell cycle - Homo sapiens (human)</td>
 </tr>
 <tr class="even">
-<td align="left">Basal transcription factors - Homo sapiens (human)</td>
-</tr>
-<tr class="odd">
-<td align="left">Spliceosome - Homo sapiens (human)</td>
+<td align="left">p53 signaling pathway - Homo sapiens (human)</td>
 </tr>
 </tbody>
 </table>
@@ -189,21 +188,39 @@ document.addEventListener("DOMContentLoaded", function() {
 </ul>
 <p>For default the organism is homo sapiens. The example show the shared protein domain network for Saccharomyces_cerevisiae. For more information see <code>SpidermiR</code> package.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">organism=<span class="st">&quot;Saccharomyces_cerevisiae&quot;</span>
-netw&lt;-<span class="kw">getNETdata</span>(<span class="dt">network=</span><span class="st">&quot;SHpd&quot;</span>,organism)</code></pre></div>
+netwa&lt;-<span class="kw">getNETdata</span>(<span class="dt">network=</span><span class="st">&quot;SHpd&quot;</span>,organism)</code></pre></div>
+<pre><code>## [1] &quot;Downloading: http://genemania.org/data/current/Saccharomyces_cerevisiae/Shared_protein_domains.INTERPRO.txt ... reference n. 1 of 2&quot;
+## [1] &quot;Downloading: http://genemania.org/data/current/Saccharomyces_cerevisiae/Shared_protein_domains.PFAM.txt ... reference n. 2 of 2&quot;
+## [1] &quot;Preprocessing of the network n. 1 of 2&quot;
+## [1] &quot;Preprocessing of the network n. 2 of 2&quot;</code></pre>
 </div>
 </div>
 <div id="integration-data-integration-between-kegg-pathway-and-network-data" class="section level1">
 <h1><code>Integration data</code>: Integration between KEGG pathway and network data</h1>
+<div id="path_net-network-of-interacting-genes-for-each-pathway-according-a-network-type-phintcolocgenintpathshpd" class="section level2">
+<h2><code>path_net</code>: Network of interacting genes for each pathway according a network type (PHint,COloc,GENint,PATH,SHpd)</h2>
+<p>The function <code>path_net</code> creates a network of interacting genes for each pathway. Interacting genes are genes belonging to the same pathway and the interaction is given from network chosen by the user, according the paramenters of the function <code>getNETdata</code>. The output will be a network of genes belonging to the same pathway.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">network_path&lt;-<span class="kw">path_net</span>(<span class="dt">pathway=</span>path,<span class="dt">net_type=</span>netw)</code></pre></div>
+<pre><code>## [1] &quot;1 PATHWAY Cell cycle - Homo sapiens (human)&quot;
+## [1] &quot;2 PATHWAY p53 signaling pathway - Homo sapiens (human)&quot;</code></pre>
+</div>
 <div id="list_path_net-list-of-interacting-genes-for-each-pathway-list-of-genes-according-a-network-type-phintcolocgenintpathshpd" class="section level2">
 <h2><code>list_path_net</code>: List of interacting genes for each pathway (list of genes) according a network type (PHint,COloc,GENint,PATH,SHpd)</h2>
 <p>The function <code>list_path_net</code> creates a list of interacting genes for each pathway. Interacting genes are genes belonging to the same pathway and the interaction is given from network chosen by the user, according the paramenters of the function <code>getNETdata</code>. The output will be a list of genes belonging to the same pathway and those having an interaction in the network.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">list_path&lt;-<span class="kw">list_path_net</span>(<span class="dt">net_type=</span>netw,<span class="dt">pathway=</span>path)</code></pre></div>
-<pre><code>## [1] &quot;Basal transcription factors - Homo sapiens (human)&quot;
-## [1] &quot;Spliceosome - Homo sapiens (human)&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">list_path&lt;-<span class="kw">list_path_net</span>(<span class="dt">lista_net=</span>network_path,<span class="dt">pathway=</span>path)</code></pre></div>
+<pre><code>## [1] &quot;List of genes interacting in the same pathway: Cell cycle - Homo sapiens (human)&quot;
+## [1] &quot;List of genes interacting in the same pathway: p53 signaling pathway - Homo sapiens (human)&quot;</code></pre>
 </div>
 </div>
 <div id="pathway-summary-indexes-score-for-each-pathway" class="section level1">
 <h1><code>Pathway summary indexes</code>: Score for each pathway</h1>
+<div id="ge_matrix-get-human-kegg-pathway-data-and-a-gene-expression-matrix-in-order-to-obtain-a-matrix-with-the-gene-expression-for-only-genes-given-containing-in-the-pathways-given-in-input-by-the-user." class="section level2">
+<h2><code>GE_matrix</code>: Get human KEGG pathway data and a gene expression matrix in order to obtain a matrix with the gene expression for only genes given containing in the pathways given in input by the user.</h2>
+<p>Starting from a matrix of gene expression (rows are genes and columns are samples, TCGA data) the function <code>GE_matrix</code> creates a of gene expression levels for each pathway given by the user:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">list_path_gene&lt;-<span class="kw">GE_matrix</span>(<span class="dt">DataMatrix=</span>tumo[,<span class="dv">1</span>:<span class="dv">2</span>],<span class="dt">pathway=</span>path)</code></pre></div>
+<pre><code>## [1] &quot;Cell cycle - Homo sapiens (human)&quot;
+## [1] &quot;p53 signaling pathway - Homo sapiens (human)&quot;</code></pre>
+</div>
 <div id="average-average-of-genes-for-each-pathway-starting-from-a-matrix-of-gene-expression" class="section level2">
 <h2><code>average</code>: Average of genes for each pathway starting from a matrix of gene expression</h2>
 <p>Starting from a matrix of gene expression (rows are genes and columns are samples, TCGA data) the function <code>average</code> creates an average matrix of gene expression for each pathway:</p>
@@ -212,10 +229,9 @@ netw&lt;-<span class="kw">getNETdata</span>(<span class="dt">network=</span><spa
 <div id="st_dv-standard-deviations-of-genes-for-each-pathway-starting-from-a-matrix-of-gene-expression" class="section level2">
 <h2><code>st_dv</code>: Standard deviations of genes for each pathway starting from a matrix of gene expression</h2>
 <p>Starting from a matrix of gene expression (rows are genes and columns are samples, TCGA data) the function <code>st_dv</code> creates a standard deviation matrix of gene expression for each pathway:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">score_st_dev&lt;-<span class="kw">st_dv</span>(<span class="dt">dataFilt=</span>tumo[,<span class="dv">1</span>:<span class="dv">2</span>],<span class="dt">pathway=</span>path)</code></pre></div>
-<pre><code>## [1] &quot;RNA polymerase - Homo sapiens (human)&quot;
-## [1] &quot;Basal transcription factors - Homo sapiens (human)&quot;
-## [1] &quot;Spliceosome - Homo sapiens (human)&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">score_st_dev&lt;-<span class="kw">st_dv</span>(<span class="dt">DataMatrix=</span>tumo[,<span class="dv">1</span>:<span class="dv">2</span>],<span class="dt">pathway=</span>path)</code></pre></div>
+<pre><code>## [1] &quot;Cell cycle - Homo sapiens (human)&quot;
+## [1] &quot;p53 signaling pathway - Homo sapiens (human)&quot;</code></pre>
 </div>
 </div>
 <div id="pathway-cross-talk-indexes-score-for-pairwise-pathways" class="section level1">
@@ -223,15 +239,14 @@ netw&lt;-<span class="kw">getNETdata</span>(<span class="dt">network=</span><spa
 <div id="euc_dist_crtlk-euclidean-distance-for-cross-talk-measure" class="section level2">
 <h2><code>euc_dist_crtlk</code>: Euclidean distance for cross-talk measure</h2>
 <p>Starting from a matrix of gene expression (rows are genes and columns are samples, TCGA data) the function <code>euc_dist_crtlk</code> creates an euclidean distance matrix of gene expression for pairwise pathway.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">score_euc_dist&lt;-<span class="kw">euc_dist_crtlk</span>(<span class="dt">dataFilt=</span>Data_CANCER_normUQ_filt,<span class="dt">pathway=</span>path)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">score_euc_dista&lt;-<span class="kw">euc_dist_crtlk</span>(<span class="dt">dataFilt=</span>tumo[,<span class="dv">1</span>:<span class="dv">2</span>],<span class="dt">pathway=</span>path)</code></pre></div>
 </div>
 <div id="ds_score_crtlk-discriminating-score-for-cross-talk-measure" class="section level2">
 <h2><code>ds_score_crtlk</code>: Discriminating score for cross-talk measure</h2>
 <p>Starting from a matrix of gene expression (rows are genes and columns are samples, TCGA data) the function <code>ds_score_crtlk</code> creates an discriminating score matrix for pairwise pathway as measure of cross-talk. Discriminating score is given by |M1-M2|/S1+S2 where M1 and M2 are mean and S1 and S2 standard deviation of expression levels of genes in a pathway 1 and and in a pathway 2 .</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cross_talk_st_dv&lt;-<span class="kw">ds_score_crtlk</span>(<span class="dt">dataFilt=</span>tumo[,<span class="dv">1</span>:<span class="dv">2</span>],<span class="dt">pathway=</span>path)</code></pre></div>
-<pre><code>## [1] &quot;RNA polymerase - Homo sapiens (human)&quot;
-## [1] &quot;Basal transcription factors - Homo sapiens (human)&quot;
-## [1] &quot;Spliceosome - Homo sapiens (human)&quot;</code></pre>
+<pre><code>## [1] &quot;Cell cycle - Homo sapiens (human)&quot;
+## [1] &quot;p53 signaling pathway - Homo sapiens (human)&quot;</code></pre>
 </div>
 </div>
 <div id="selection-of-pathway-cross-talk-selection-of-pathway-cross-talk" class="section level1">
@@ -240,10 +255,10 @@ netw&lt;-<span class="kw">getNETdata</span>(<span class="dt">network=</span><spa
 <h2><code>svm_classification</code>: SVM classification</h2>
 <p>Given the substantial difference in the activities of many pathways between two classes (e.g. normal and cancer), we examined the effectiveness to classify the classes based on their pairwise pathway profiles. This function is used to find the interacting pathways that are altered in a particular pathology in terms of Area Under Curve (AUC).AUC was estimated by cross-validation method (k-fold cross-validation, k=10).It randomly selected some fraction of TCGA data (e.g. nf= 60; 60% of original dataset) to form the training set and then assigned the rest of the points to the testing set (40% of original dataset). For each pairwise pathway the user can obtain using the methods mentioned above a score matrix ( e.g.dev_std_crtlk ) and can focus on the pairs of pathways able to differentiate a particular subtype with respect to the normal type.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">nf &lt;-<span class="st"> </span><span class="dv">60</span>
-res_class&lt;-<span class="kw">svm_classification</span>(<span class="dt">TCGA_matrix=</span>score_euc_dist,<span class="dt">nfs=</span>nf,<span class="dt">normal=</span><span class="kw">colnames</span>(norm[,<span class="dv">1</span>:<span class="dv">12</span>]),<span class="dt">tumour=</span><span class="kw">colnames</span>(tumo[,<span class="dv">1</span>:<span class="dv">12</span>]))</code></pre></div>
-<pre><code>## [1] &quot;RNApolymerase_Basaltranscriptionfactors&quot;</code></pre>
-<pre><code>## [1] &quot;RNApolymerase_Spliceosome&quot;
-## [1] &quot;Basaltranscriptionfactors_Spliceosome&quot;</code></pre>
+res_class&lt;-<span class="kw">svm_classification</span>(<span class="dt">TCGA_matrix=</span>score_euc_dist[<span class="dv">1</span>:<span class="dv">2</span>,],<span class="dt">nfs=</span>nf,<span class="dt">normal=</span><span class="kw">colnames</span>(norm[,<span class="dv">1</span>:<span class="dv">12</span>]),<span class="dt">tumour=</span><span class="kw">colnames</span>(tumo[,<span class="dv">1</span>:<span class="dv">12</span>]))</code></pre></div>
+<pre><code>## [1] &quot;Cellcycle_p53signalingpathway&quot;</code></pre>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAACDQAAAXcCAMAAADgSrzUAAAAgVBMVEUAAAAAADoAAGYAOpAAZpAAZrYA//86AAA6AGY6OgA6Ojo6kJA6kNtmAABmZgBmZjpmZmZmtttmtv+QOgCQZgCQkDqQtpCQ27aQ29uQ2/+2ZgC2tma225C2///bkDrbtmbb25Db2//b/9vb////AAD/tmb/trb/25D//7b//9v///+2C7EBAAAACXBIWXMAAC4jAAAuIwF4pT92AAAgAElEQVR4nOzdfZejRtjY6bb9tCfZjDfZcXJ2rY119sRWbM/3/4BroTdAgEoS1E0V1/WX3aMW6uqZvn8NCD6+AwAk+Ih+AQBAGUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBENAAASUQDAJBkk9HwAQBFCp6fsZuPEf0tB4AXxc7P0K0Hif6OA8CLYudn6NZH/PNre31++mPu549edAB4RfT8Wt/03A+F1bzhEL3oAPCK6Pm1sunZ3cfQ9uPv820letEB4BXR82td03NwL8PF19k2E73oAPCK6Pm1qul5aYbuXoW/f5m7GqIXHQBeET2/1jQ9D00afA790Sknvs20oehFB4BXRM+vFU3P5nyGsVMXmt0Nc50OGb3oAPCK6Pm1oun515ePjx9+m/rTuXY1RC86ALwien6taHrup09b2I8dunhe9KIDwCui59d6pufx6MTU+yqPByhmOj4RvegA8Iro+bWe6fkoCh5FxROiFx0AXhE9v9YzPY/RMHn4YScaANi06Pm1nukpGgBgUvT8Ws/0fBQNDk8AsHHR82s909OJkAAwKXp+rWh67rzlEgAmRM+vFU3Pw+S9LF3cCYCti55fK5qeLiMNAFOi59eapudh/F6WblgFANHza1XTc/jW2M0eiNH7X74ietEB4BXR82td0/NSDYNma4bwRQeAV0TPr5VNz+bUhUEzXaKhEb3oAPCK6Pm1vum5W3Yvw1H0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" /></p>
+<pre><code>## [1] &quot;Cellcycle_Apoptosis&quot;</code></pre>
 </div>
 </div>
 <div id="plotting_cross_talk-plot-pathway-cross-talk" class="section level1">
@@ -271,172 +286,155 @@ res_class&lt;-<span class="kw">svm_classification</span>(<span class="dt">TCGA_m
 ##  [8] datasets  methods   base     
 ## 
 ## other attached packages:
+## [1] png_0.1-7            StarBioTrek_1.1.1    miRNAtap_1.6.0      
 ## [4] AnnotationDbi_1.34.4 IRanges_2.6.1        S4Vectors_0.10.3    
 ## [7] Biobase_2.32.0       BiocGenerics_0.18.0  BiocStyle_2.0.3     
 ## 
 ## loaded via a namespace (and not attached):
-##   [1] proto_0.3-10                           
-##   [2] R.utils_2.4.0                          
-##   [3] lme4_1.1-12                            
-##   [4] htmlwidgets_0.7                        
-##   [5] RSQLite_1.0.0                          
-##   [6] trimcluster_0.1-2                      
+##   [1] circlize_0.3.9                         
+##   [2] aroma.light_3.2.0                      
+##   [3] plyr_1.8.4                             
+##   [4] igraph_1.0.1                           
+##   [5] ConsensusClusterPlus_1.36.0            
+##   [6] splines_3.3.1                          
 ##   [7] BiocParallel_1.6.6                     
-##   [8] devtools_1.12.0                        
-##   [9] DESeq_1.24.0                           
-##  [10] munsell_0.4.3                          
-##  [11] codetools_0.2-15                       
-##  [12] preprocessCore_1.34.0                  
-##  [13] chron_2.3-47                           
-##  [14] withr_1.0.2                            
-##  [15] colorspace_1.2-6                       
-##  [16] BiocInstaller_1.22.3                   
-##  [17] highr_0.6                              
-##  [18] knitr_1.14                             
-##  [19] supraHex_1.10.0                        
+##   [8] GenomeInfoDb_1.8.7                     
+##   [9] ggplot2_2.1.0                          
+##  [10] TH.data_1.0-7                          
+##  [11] digest_0.6.10                          
+##  [12] foreach_1.4.3                          
+##  [13] BiocInstaller_1.22.3                   
+##  [14] htmltools_0.3.5                        
+##  [15] gdata_2.17.0                           
+##  [16] magrittr_1.5                           
+##  [17] memoise_1.0.0                          
+##  [18] cluster_2.0.5                          
+##  [19] doParallel_1.0.10                      
 ##  [20] ROCR_1.0-7                             
-##  [21] robustbase_0.92-6                      
-##  [22] mnormt_1.5-4                           
-##  [23] hwriter_1.3.2                          
-##  [24] downloader_0.4                         
-##  [25] TH.data_1.0-7                          
-##  [26] ggthemes_3.2.0                         
-##  [27] EDASeq_2.6.2                           
-##  [28] diptest_0.75-7                         
-##  [29] R6_2.2.0                               
-##  [30] doParallel_1.0.10                      
-##  [31] GenomeInfoDb_1.8.7                     
-##  [32] flexmix_2.3-13                         
-##  [33] bitops_1.0-6                           
-##  [34] reshape_0.8.5                          
-##  [35] assertthat_0.1                         
-##  [36] networkD3_0.2.13                       
-##  [37] scales_0.4.0                           
-##  [38] multcomp_1.4-6                         
-##  [39] nnet_7.3-12                            
-##  [40] gtable_0.2.0                           
-##  [41] affy_1.50.0                            
-##  [42] sandwich_2.3-4                         
-##  [43] genefilter_1.54.2                      
-##  [44] sjPlot_2.1.0                           
-##  [45] GlobalOptions_0.0.10                   
-##  [46] splines_3.3.1                          
-##  [47] rtracklayer_1.32.2                     
-##  [48] SpidermiR_1.2.5                        
-##  [49] hexbin_1.27.1                          
-##  [50] broom_0.4.1                            
-##  [51] yaml_2.1.13                            
-##  [52] reshape2_1.4.1                         
-##  [53] GenomicFeatures_1.24.5                 
-##  [54] tools_3.3.1                            
-##  [55] psych_1.6.9                            
-##  [56] ggplot2_2.1.0                          
-##  [57] affyio_1.42.0                          
-##  [58] gplots_3.0.1                           
-##  [59] RColorBrewer_1.1-2                     
-##  [60] gsubfn_0.6-6                           
-##  [61] Rcpp_0.12.7                            
-##  [62] plyr_1.8.4                             
-##  [63] visNetwork_1.0.2                       
-##  [64] zlibbioc_1.18.0                        
-##  [65] purrr_0.2.2                            
-##  [66] RCurl_1.95-4.8                         
+##  [21] limma_3.28.21                          
+##  [22] ComplexHeatmap_1.10.2                  
+##  [23] Biostrings_2.40.2                      
+##  [24] readr_1.0.0                            
+##  [25] annotate_1.50.1                        
+##  [26] matrixStats_0.51.0                     
+##  [27] R.utils_2.5.0                          
+##  [28] sandwich_2.3-4                         
+##  [29] colorspace_1.2-7                       
+##  [30] rvest_0.3.2                            
+##  [31] ggrepel_0.6.3                          
+##  [32] dplyr_0.5.0                            
+##  [33] jsonlite_1.1                           
+##  [34] RCurl_1.95-4.8                         
+##  [35] hexbin_1.27.1                          
+##  [36] TxDb.Hsapiens.UCSC.hg19.knownGene_3.2.2
+##  [37] graph_1.50.0                           
+##  [38] roxygen2_5.0.1                         
+##  [39] genefilter_1.54.2                      
+##  [40] supraHex_1.10.0                        
+##  [41] survival_2.40-1                        
+##  [42] miRNAtap.db_0.99.7                     
+##  [43] zoo_1.7-13                             
+##  [44] iterators_1.0.8                        
+##  [45] ape_3.5                                
+##  [46] gtable_0.2.0                           
+##  [47] zlibbioc_1.18.0                        
+##  [48] XVector_0.12.1                         
+##  [49] GetoptLong_0.1.5                       
+##  [50] kernlab_0.9-25                         
+##  [51] Rgraphviz_2.16.0                       
+##  [52] shape_1.4.2                            
+##  [53] prabclus_2.2-6                         
+##  [54] DEoptimR_1.0-6                         
+##  [55] scales_0.4.1                           
+##  [56] DESeq_1.24.0                           
+##  [57] mvtnorm_1.0-5                          
+##  [58] DBI_0.5-1                              
+##  [59] GGally_1.2.0                           
+##  [60] edgeR_3.14.0                           
+##  [61] ggthemes_3.2.0                         
+##  [62] Rcpp_0.12.7                            
+##  [63] xtable_1.8-2                           
+##  [64] matlab_1.0.2                           
+##  [65] mclust_5.2                             
+##  [66] preprocessCore_1.34.0                  
 ##  [67] sqldf_0.4-10                           
-##  [68] GetoptLong_0.1.5                       
-##  [69] cowplot_0.6.3                          
-##  [70] zoo_1.7-13                             
-##  [71] SummarizedExperiment_1.2.3             
-##  [72] haven_1.0.0                            
-##  [73] ggrepel_0.5                            
-##  [74] cluster_2.0.5                          
-##  [75] magrittr_1.5                           
-##  [76] data.table_1.9.6                       
-##  [77] dnet_1.0.9                             
-##  [78] circlize_0.3.9                         
-##  [79] effects_3.1-2                          
-##  [80] mvtnorm_1.0-5                          
-##  [81] whisker_0.3-2                          
-##  [82] sjmisc_2.0.0                           
-##  [83] matrixStats_0.51.0                     
-##  [84] aroma.light_3.2.0                      
-##  [85] evaluate_0.9                           
-##  [86] xtable_1.8-2                           
-##  [87] XML_3.98-1.4                           
-##  [88] sjstats_0.5.0                          
-##  [89] mclust_5.2                             
-##  [90] gridExtra_2.2.1                        
-##  [91] shape_1.4.2                            
-##  [92] biomaRt_2.28.0                         
-##  [93] tibble_1.2                             
-##  [94] KernSmooth_2.23-15                     
-##  [95] minqa_1.2.4                            
-##  [96] R.oo_1.20.0                            
-##  [97] htmltools_0.3.5                        
-##  [98] tidyr_0.6.0                            
-##  [99] geneplotter_1.50.0                     
-## [100] DBI_0.5-1                              
-## [101] formatR_1.4                            
-## [102] matlab_1.0.2                           
-## [103] ComplexHeatmap_1.10.2                  
-## [104] MASS_7.3-45                            
-## [105] fpc_2.1-10                             
-## [106] ShortRead_1.30.0                       
-## [107] Matrix_1.2-6                           
-## [108] readr_1.0.0                            
-## [109] parmigene_1.0.2                        
-## [110] R.methodsS3_1.7.1                      
-## [111] gdata_2.17.0                           
-## [112] igraph_1.0.1                           
-## [113] GenomicRanges_1.24.3                   
-## [114] TxDb.Hsapiens.UCSC.hg19.knownGene_3.2.2
-## [115] GenomicAlignments_1.8.4                
-## [116] coin_1.1-2                             
-## [117] foreign_0.8-66                         
-## [118] xml2_1.0.0                             
-## [119] roxygen2_5.0.1                         
-## [120] foreach_1.4.3                          
-## [121] annotate_1.50.1                        
-## [122] stringdist_0.9.4.2                     
-## [123] XVector_0.12.1                         
-## [124] rvest_0.3.2                            
-## [125] stringr_1.1.0                          
-## [126] digest_0.6.10                          
-## [127] ConsensusClusterPlus_1.36.0            
-## [128] graph_1.50.0                           
-## [129] Biostrings_2.40.2                      
-## [130] rmarkdown_1.0                          
-## [131] TCGAbiolinks_2.1.6                     
-## [132] dendextend_1.3.0                       
-## [133] edgeR_3.14.0                           
-## [134] miRNAtap.db_0.99.7                     
-## [135] curl_2.1                               
-## [136] kernlab_0.9-25                         
-## [137] Rsamtools_1.24.0                       
-## [138] gtools_3.5.0                           
-## [139] modeltools_0.2-21                      
-## [140] rjson_0.2.15                           
-## [141] nloptr_1.0.4                           
-## [142] nlme_3.1-128                           
-## [143] jsonlite_1.1                           
-## [144] limma_3.28.21                          
-## [145] lattice_0.20-33                        
-## [146] GGally_1.2.0                           
-## [147] KEGGREST_1.12.3                        
-## [148] httr_1.2.1                             
-## [149] DEoptimR_1.0-6                         
-## [150] survival_2.39-4                        
-## [151] prabclus_2.2-6                         
-## [152] iterators_1.0.8                        
-## [153] Rgraphviz_2.16.0                       
-## [154] class_7.3-14                           
-## [155] stringi_1.1.2                          
-## [156] org.Hs.eg.db_3.3.0                     
-## [157] latticeExtra_0.6-28                    
-## [158] caTools_1.17.1                         
-## [159] memoise_1.0.0                          
-## [160] dplyr_0.5.0                            
-## [161] e1071_1.6-7                            
-## [162] ape_3.5</code></pre>
+##  [68] htmlwidgets_0.8                        
+##  [69] httr_1.2.1                             
+##  [70] gplots_3.0.1                           
+##  [71] RColorBrewer_1.1-2                     
+##  [72] fpc_2.1-10                             
+##  [73] modeltools_0.2-21                      
+##  [74] reshape_0.8.6                          
+##  [75] XML_3.98-1.4                           
+##  [76] R.methodsS3_1.7.1                      
+##  [77] flexmix_2.3-13                         
+##  [78] nnet_7.3-12                            
+##  [79] visNetwork_1.0.2                       
+##  [80] munsell_0.4.3                          
+##  [81] tools_3.3.1                            
+##  [82] downloader_0.4                         
+##  [83] gsubfn_0.6-6                           
+##  [84] RSQLite_1.0.0                          
+##  [85] devtools_1.12.0                        
+##  [86] evaluate_0.10                          
+##  [87] stringr_1.1.0                          
+##  [88] yaml_2.1.13                            
+##  [89] org.Hs.eg.db_3.3.0                     
+##  [90] knitr_1.15                             
+##  [91] robustbase_0.92-6                      
+##  [92] caTools_1.17.1                         
+##  [93] KEGGREST_1.12.3                        
+##  [94] dendextend_1.3.0                       
+##  [95] coin_1.1-2                             
+##  [96] TCGAbiolinks_2.3.2                     
+##  [97] EDASeq_2.6.2                           
+##  [98] nlme_3.1-128                           
+##  [99] whisker_0.3-2                          
+## [100] R.oo_1.21.0                            
+## [101] xml2_1.0.0                             
+## [102] biomaRt_2.28.0                         
+## [103] curl_2.2                               
+## [104] e1071_1.6-7                            
+## [105] affyio_1.42.0                          
+## [106] tibble_1.2                             
+## [107] geneplotter_1.50.0                     
+## [108] stringi_1.1.2                          
+## [109] highr_0.6                              
+## [110] GenomicFeatures_1.24.5                 
+## [111] lattice_0.20-34                        
+## [112] trimcluster_0.1-2                      
+## [113] Matrix_1.2-7.1                         
+## [114] networkD3_0.2.13                       
+## [115] GlobalOptions_0.0.10                   
+## [116] parmigene_1.0.2                        
+## [117] data.table_1.9.6                       
+## [118] bitops_1.0-6                           
+## [119] dnet_1.0.9                             
+## [120] rtracklayer_1.32.2                     
+## [121] GenomicRanges_1.24.3                   
+## [122] R6_2.2.0                               
+## [123] latticeExtra_0.6-28                    
+## [124] affy_1.50.0                            
+## [125] hwriter_1.3.2                          
+## [126] ShortRead_1.30.0                       
+## [127] gridExtra_2.2.1                        
+## [128] KernSmooth_2.23-15                     
+## [129] codetools_0.2-15                       
+## [130] MASS_7.3-45                            
+## [131] gtools_3.5.0                           
+## [132] assertthat_0.1                         
+## [133] chron_2.3-47                           
+## [134] SummarizedExperiment_1.2.3             
+## [135] proto_1.0.0                            
+## [136] rjson_0.2.15                           
+## [137] withr_1.0.2                            
+## [138] SpidermiR_1.4.2                        
+## [139] GenomicAlignments_1.8.4                
+## [140] Rsamtools_1.24.0                       
+## [141] multcomp_1.4-6                         
+## [142] diptest_0.75-7                         
+## [143] class_7.3-14                           
+## [144] rmarkdown_1.1</code></pre>
 </div>
 </div>
 <div id="references" class="section level1 unnumbered">

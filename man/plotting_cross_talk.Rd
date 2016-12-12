@@ -11,7 +11,7 @@ plotting_cross_talk(DataMatrix, pathway, path_matrix)
 
 \item{pathway}{pathway data as provided by getKEGGdata}
 
-\item{path_matrix}{output of the function GE_matrix}
+\item{path_matrix}{output of the function matrix_plot}
 }
 \value{
 a plot for pathway cross talk

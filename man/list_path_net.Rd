@@ -2,12 +2,12 @@
 % Please edit documentation in R/path_star.R
 \name{list_path_net}
 \alias{list_path_net}
-\title{Get human KEGG pathway data and network data in order to define the common gene.}
+\title{Get human KEGG pathway data and output of path_net in order to define the common genes.}
 \usage{
-list_path_net(net_type, pathway)
+list_path_net(lista_net, pathway)
 }
 \arguments{
-\item{net_type}{network data as provided by getNETdata}
+\item{lista_net}{output of path_net}
 
 \item{pathway}{pathway data as provided by getKEGGdata}
 }
@@ -18,6 +18,7 @@ a list of genes for each pathway (interacting genes belong to that pathway)
 list_path_net creates a list of interacting genes for each human pathway.
 }
 \examples{
-list_path<-list_path_net(net_type=netw,pathway=path)
+lista_netw<-path_net(pathway=path,net_type=netw)
+list_path<-list_path_net(lista_net=lista_netw,pathway=path)
 }
 

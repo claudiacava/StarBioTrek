@@ -1,16 +1,4 @@
-#overlap <- function(net_type,x,currentPathway_genes){
- # de<-net_type[which(net_type$m_shar_pro==x),]
-#  fr<-intersect(de$m2_shar_pro,currentPathway_genes)
- # go=list()
-  #if(length(fr)!=0)    {
-   # for (i in 1:length(fr)){
-   #   de2<-de[which(de$m2_shar_pro==fr[i]),]
-    #  go[[i]]<-de2
-    #}
-  #}            
-#  dst<-do.call("rbind", go)
- # return(dst)
-#}
+
 
 
 select_path_carb<-function(Carbohydrate){
@@ -30,7 +18,9 @@ n<-paste("Propanoate metabolism", species)
 o<-paste("Butanoate metabolism", species)
 p<-paste("C5-Branched dibasic acid metabolism", species)
 q<-paste("Inositol phosphate metabolism", species)
-mer<-c(a,b,c,d,e,f,g,h,i,l,m,n,o,p,q)
+r<-paste("Enzymes", species)
+s<-paste("Compounds with biological roles",species)
+mer<-c(a,b,c,d,e,f,g,h,i,l,m,n,o,p,q,r,s)
 return(mer)
 }
 
@@ -525,10 +515,25 @@ for (i in 1:length(pathways.list)){
     names(lo)[[i]]<-names(pathways.list)[[i]]
   }
 }
-
 pathways.list<-lo[lapply(lo,length)!=0] 
 pathway.codes <- sub("path:", "", names(pathways.list))
 b<-do.call("rbind", pathways.list)
 list_pathkegg<-list(pathway.codes,b)
 return(list_pathkegg)
 }
+
+
+overlap <- function(net_type,x,currentPathway_genes){
+  de<-net_type[which(net_type$m_shar_pro==x),]
+  fr<-intersect(de$m2_shar_pro,currentPathway_genes)
+  go=list()
+  if(length(fr)!=0)    {
+    for (i in 1:length(fr)){
+      de2<-de[which(de$m2_shar_pro==fr[i]),]
+      go[[i]]<-de2
+    }
+  }            
+  dst<-do.call("rbind", go)
+  return(dst)
+}
+

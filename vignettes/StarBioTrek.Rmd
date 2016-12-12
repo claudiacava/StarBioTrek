@@ -457,16 +457,37 @@ netwa<-getNETdata(network="SHpd",organism)
 
 # `Integration data`: Integration between KEGG pathway and network data 
 
+## `path_net`: Network of interacting genes for each pathway according a network type (PHint,COloc,GENint,PATH,SHpd)
+
+The function `path_net` creates a network of interacting genes for each pathway. Interacting genes are genes belonging to the same pathway and the interaction is given from network chosen by the user, according the paramenters of the function `getNETdata`.
+The output will be a network of genes belonging to the same pathway.  
+
+```{r, eval = TRUE}
+network_path<-path_net(pathway=path,net_type=netw)
+```
+
+
 ## `list_path_net`: List of interacting genes for each pathway (list of genes) according a network type (PHint,COloc,GENint,PATH,SHpd)
 
 The function `list_path_net` creates a list of interacting genes for each pathway. Interacting genes are genes belonging to the same pathway and the interaction is given from network chosen by the user, according the paramenters of the function `getNETdata`.
 The output will be a list of genes belonging to the same pathway and those having an interaction in the network.  
 
 ```{r, eval = TRUE}
-list_path<-list_path_net(net_type=netw,pathway=path)
+list_path<-list_path_net(lista_net=network_path,pathway=path)
 ```
 
+
+
+
 # `Pathway summary indexes`: Score for each pathway 
+
+## `GE_matrix`: Get human KEGG pathway data and a gene expression matrix in order to obtain a matrix with the gene expression for only genes given containing in the pathways given in input by the user.
+
+Starting from a matrix of gene expression (rows are genes and columns are samples, TCGA data) the function `GE_matrix` creates a of gene expression levels for each pathway given by the user:
+
+```{r, eval = TRUE}
+list_path_gene<-GE_matrix(DataMatrix=tumo[,1:2],pathway=path)
+```
 
 ## `average`: Average of genes for each pathway starting from a matrix of gene expression 
 Starting from a matrix of gene expression (rows are genes and columns are samples, TCGA data) the function `average` creates an average matrix of gene expression for each pathway:

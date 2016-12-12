@@ -1,33 +1,92 @@
 #' @title Get human KEGG pathway data and network data in order to define the common gene.
-#' @description list_path_net creates a list of interacting genes for each human pathway.   
+#' @description path_net creates a list of network data for each human pathway. The network data will be generated when interacting genes belong to that pathway.  
 #' @param net_type  network data as provided by getNETdata
+#' @param pathway  pathway data as provided by getKEGGdata
+#' @export
+#' @return a list of network data for each pathway (interacting genes belong to that pathway)
+#' @examples
+#' lista_net<-path_net(pathway=path,net_type=netw)
+path_net<-function(pathway,net_type){
+  lista_int<-list()
+  for (k in 1:ncol(pathway)){
+    #k=1 
+    print(paste(k,"PATHWAY",colnames(pathway)[k]))
+    currentPathway_genes<-pathway[,k]
+    common1 <- intersect( net_type$m_shar_pro, currentPathway_genes)
+    common2 <- intersect( net_type$m2_shar_pro, currentPathway_genes)
+    if (length(common1)==0 & length(common2)==0 ){
+      mago2<-character(length = 0)
+    }
+    if (length(common1)!=0 | length(common2)!=0 ){
+      b=list()
+      for (i in 1:length(common1)){
+        x<-common1[i]
+        n<-overlap(net_type,x,currentPathway_genes)
+        b[[i]]<-n
+      }
+      v<-do.call("rbind", b)
+      c=list()
+      for (i in 1:length(common2)){
+        x<-common1[i]
+        n<-overlap(net_type,x,currentPathway_genes)
+        c[[i]]<-n
+      }
+      v2<-do.call("rbind", b)
+      mago<-rbind(v,v2)
+      mago2<-mago[!duplicated(mago), ]
+    }
+    
+    if (length(mago2)!=0){
+      lista_int[[k]]<-mago2
+    }
+    if (length(mago2)==0){
+      lista_int[[k]]<-"0"} 
+    
+    names(lista_int)[k]<-colnames(pathway)[k] 
+  }   
+  return(lista_int)
+}
+
+
+#' @title Get human KEGG pathway data and output of path_net in order to define the common genes.
+#' @description list_path_net creates a list of interacting genes for each human pathway.   
+#' @param lista_net  output of path_net
 #' @param pathway  pathway data as provided by getKEGGdata
 #' @export
 #' @return a list of genes for each pathway (interacting genes belong to that pathway)
 #' @examples
-#' list_path<-list_path_net(net_type=netw,pathway=path)
-list_path_net<-function(net_type,pathway){
-  i <- sapply(net_type, is.factor) 
-  net_type[i] <- lapply(net_type[i], as.character)
-  m<-c(net_type$m_shar_pro)
-  m2<-c(net_type$m2_shar_pro)
+#' lista_netw<-path_net(pathway=path,net_type=netw)
+#' list_path<-list_path_net(lista_net=lista_netw,pathway=path)
+list_path_net<-function(lista_net,pathway){
+v=list()
+bn=list()
+for (j in 1:length(lista_net)){
+  cf<-lista_net[[j]]
+  i <- sapply(cf, is.factor) 
+  cf[i] <- lapply(cf[i], as.character)
+  m<-c(cf$m_shar_pro)
+  m2<-c(cf$m2_shar_pro)
   s<-c(m,m2)
   fr<- unique(s)
   n<-as.data.frame(fr)
+  if(length(n)==0){
+    v[[j]]<-NULL
+    
+  }
+  if(length(n)!=0){
   i <- sapply(n, is.factor) 
   n[i] <- lapply(n[i], as.character)
-  v=list()
-    for (k in  1:ncol(pathway)){
-      if (length(intersect(n$fr,pathway[,k])!=0)){
-        print(colnames(pathway)[k])
-        aa<-intersect(n$fr,pathway[,k])
-        v[[k]]<-aa
-        names(v)[k]<-colnames(pathway)[k]
-      }
-    }
-  
-  return(v)
-}
+  #for (k in  1:ncol(pathway)){
+  if (length(intersect(n$fr,pathway[,j]))==nrow(n)){
+    print(paste("List of genes interacting in the same pathway:",colnames(pathway)[j]))
+    aa<-intersect(n$fr,pathway[,j])
+    v[[j]]<-aa
+    names(v)[j]<-colnames(pathway)[j]
+  }
+}}
+return(v)}
+
+
 
 
 #' @title Get human KEGG pathway data and a gene expression matrix in order to obtain a matrix with the gene expression for only pathways given in input .
@@ -37,12 +96,13 @@ list_path_net<-function(net_type,pathway){
 #' @export
 #' @return a matrix for each pathway ( gene expression level belong to that pathway)
 #' @examples
-#' list_path_plot<-GE_matrix(DataMatrix=tumo[,1:2],pathway=path)
+#' list_path_gene<-GE_matrix(DataMatrix=tumo[,1:2],pathway=path)
 GE_matrix<-function(DataMatrix,pathway) {
   path_name<-sub(' ', '_',colnames(pathway))
 d_pr<- gsub(" - Homo sapiens (human)", "", path_name, fixed="TRUE")
 colnames(pathway)<-d_pr
-zz<-as.data.frame(rowMeans(DataMatrix))
+#zz<-as.data.frame(rowMeans(DataMatrix))
+zz<-as.data.frame(DataMatrix)
 v<-list()
 for ( k in 1: ncol(pathway)){
   #k=2
@@ -51,26 +111,74 @@ for ( k in 1: ncol(pathway)){
   currentPathway_genes_list_common <- intersect(rownames(zz), currentPathway_genes<-pathway[,k])
   currentPathway_genes_list_commonMatrix <- as.data.frame(zz[currentPathway_genes_list_common,])
   rownames(currentPathway_genes_list_commonMatrix)<-currentPathway_genes_list_common
-  v[[k]]<- currentPathway_genes_list_common
+  v[[k]]<- currentPathway_genes_list_commonMatrix
   names(v)[k]<-colnames(pathway)[k]
   }
 }  
-PEAmatrix <- matrix( 0,nrow(DataMatrix),ncol(pathway))
-rownames(PEAmatrix) <- as.factor(rownames(DataMatrix))
-colnames(PEAmatrix) <-  as.factor(colnames(pathway))
-for (i in 1:length(v)){
-PEAmatrix[v[[i]],i]<-zz[v[[i]],]
+#PEAmatrix <- matrix( 0,nrow(DataMatrix),ncol(pathway))
+#rownames(PEAmatrix) <- as.factor(rownames(DataMatrix))
+#colnames(PEAmatrix) <-  as.factor(colnames(pathway))
+#for (i in 1:length(v)){
+#PEAmatrix[v[[i]],i]<-zz[v[[i]],]
+#}
+#PEAmatrix<-PEAmatrix[which(rowSums(PEAmatrix) > 0),]
+return(v)
 }
-PEAmatrix<-PEAmatrix[which(rowSums(PEAmatrix) > 0),]
-return(PEAmatrix)
+
+
+
+#' @title Get human KEGG pathway data and a gene expression matrix in order to obtain a matrix with the mean gene expression for only pathways given in input .
+#' @description GE_matrix creates a matrix of mean gene expression for pathways given by the user.   
+#' @param DataMatrix  gene expression matrix (eg.TCGA data)
+#' @param pathway  pathway data as provided by getKEGGdata
+#' @export
+#' @return a matrix for each pathway (mean gene expression level belong to that pathway)
+#' @examples
+#' list_path_plot<-matrix_plot(DataMatrix=tumo[,1:2],pathway=path)
+matrix_plot<-function(DataMatrix,pathway) {
+  path_name<-sub(' ', '_',colnames(pathway))
+  d_pr<- gsub(" - Homo sapiens (human)", "", path_name, fixed="TRUE")
+  colnames(pathway)<-d_pr
+  zz<-as.data.frame(rowMeans(DataMatrix))
+  v<-list()
+  for ( k in 1: ncol(pathway)){
+    #k=2
+    if (length(intersect(rownames(zz),pathway[,k])!=0)){
+      print(colnames(path)[k])
+      currentPathway_genes_list_common <- intersect(rownames(zz), currentPathway_genes<-pathway[,k])
+      currentPathway_genes_list_commonMatrix <- as.data.frame(zz[currentPathway_genes_list_common,])
+      rownames(currentPathway_genes_list_commonMatrix)<-currentPathway_genes_list_common
+      v[[k]]<- currentPathway_genes_list_common
+      names(v)[k]<-colnames(pathway)[k]
+    }
+  }  
+  PEAmatrix <- matrix( 0,nrow(DataMatrix),ncol(pathway))
+  rownames(PEAmatrix) <- as.factor(rownames(DataMatrix))
+  colnames(PEAmatrix) <-  as.factor(colnames(pathway))
+  for (i in 1:length(v)){
+  PEAmatrix[v[[i]],i]<-zz[v[[i]],]
+  }
+  PEAmatrix<-PEAmatrix[which(rowSums(PEAmatrix) > 0),]
+  return(PEAmatrix)
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 #' @title Get human KEGG pathway data and a gene expression matrix we obtain a matrix with the gene expression for only pathways given in input .
 #' @description plotting_matrix creates a matrix of gene expression for pathways given by the user.   
 #' @param DataMatrix  gene expression matrix (eg.TCGA data)
 #' @param pathway  pathway data as provided by getKEGGdata
-#' @param path_matrix  output of the function GE_matrix
+#' @param path_matrix  output of the function matrix_plot
 #' @export
 #' @return a plot for pathway cross talk
 #' @examples
@@ -92,7 +200,9 @@ plotting_cross_talk<-function(DataMatrix,pathway,path_matrix){
     }
   }
   vv<-list()
-  dc<-cor(t(path_matrix))
+  mi<-t(path_matrix)
+  
+  dc<-cor(mi)
   for ( k in 1: length(v)){
     currentPathway_genes_list_common <- intersect(rownames(dc), v[[k]])
     a<-match(currentPathway_genes_list_common,rownames(dc))

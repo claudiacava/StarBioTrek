@@ -124,7 +124,10 @@ if (KEGG_path=="KEGG_path") {
 pathway.codes <- sub("path:", "", names(pathways.list))
 pathways.list<-list(pathways.list)
 pathways.list<-pathways.list[lapply(pathways.list,length)!=0] 
-a<-do.call("cbind", pathways.list)
+list_pathkeg<-do.call("cbind", pathways.list)
+c<-list(pathway.codes,list_pathkeg)
+a<-c[[2]]
+
 }
 pathway.codes<-c[[1]]
 genes.by.pathway <- sapply(pathway.codes,
@@ -170,7 +173,7 @@ return(PROVA)
 #' SHpd for Shared_protein_domains
 #' @param organism organism==NULL default value is homo sapiens
 #' @export
-#' @importFrom SpidermiR SpidermiRquery_species SpidermiRquery_spec_networks SpidermiRdownload_net 
+#' @importFrom SpidermiR SpidermiRquery_species SpidermiRquery_spec_networks SpidermiRdownload_net SpidermiRprepare_NET
 #' @return dataframe with gene-gene (or protein-protein interactions)
 #' @examples
 #' organism="Saccharomyces_cerevisiae"
@@ -180,22 +183,22 @@ getNETdata<-function(network,organism=NULL){
   if (is.null(organism)) {
   net_shar_prot<-SpidermiRquery_spec_networks(organismID = org_shar_pro[6,],network)
   out_net_shar_pro<-SpidermiRdownload_net(net_shar_prot)
- # geneSymb_net_shar_pro<-SpidermiRprepare_NET(organismID = org_shar_pro[6,],data = out_net_shar_pro)
+  geneSymb_net_shar_pro<-SpidermiRprepare_NET(organismID = org_shar_pro[6,],data = out_net_shar_pro)
   }
   if( !is.null(organism) ){
     net_shar_prot<-SpidermiRquery_spec_networks(organismID = org_shar_pro[9,],network)
     out_net_shar_pro<-SpidermiRdownload_net(net_shar_prot)
-  #  geneSymb_net_shar_pro<-SpidermiRprepare_NET(organismID = org_shar_pro[9,],data = out_net_shar_pro)
+    geneSymb_net_shar_pro<-SpidermiRprepare_NET(organismID = org_shar_pro[9,],data = out_net_shar_pro)
 }
-  #ds_shar_pro<-do.call("rbind", geneSymb_net_shar_pro)
-  #data_shar_pro<-as.data.frame(ds_shar_pro[!duplicated(ds_shar_pro), ]) 
-  #sdc_shar_pro<-unlist(data_shar_pro$gene_symbolA,data_shar_pro$gene_symbolB)
-  #m_shar_pro<-c(data_shar_pro$gene_symbolA)
-  #m2_shar_pro<-c(data_shar_pro$gene_symbolB)
-  #ss_shar_pro<-cbind(m_shar_pro,m2_shar_pro)
-  #data_pr_shar_pro<-as.data.frame(ss_shar_pro[!duplicated(ss_shar_pro), ]) 
-  #colnames(data_pr_shar_pro) <- c("m_shar_pro", "m2_shar_pro")
-return(out_net_shar_pro)
+  ds_shar_pro<-do.call("rbind", geneSymb_net_shar_pro)
+  data_shar_pro<-as.data.frame(ds_shar_pro[!duplicated(ds_shar_pro), ]) 
+  sdc_shar_pro<-unlist(data_shar_pro$gene_symbolA,data_shar_pro$gene_symbolB)
+  m_shar_pro<-c(data_shar_pro$gene_symbolA)
+  m2_shar_pro<-c(data_shar_pro$gene_symbolB)
+  ss_shar_pro<-cbind(m_shar_pro,m2_shar_pro)
+  data_pr_shar_pro<-as.data.frame(ss_shar_pro[!duplicated(ss_shar_pro), ]) 
+  colnames(data_pr_shar_pro) <- c("m_shar_pro", "m2_shar_pro")
+return(data_pr_shar_pro)
 }
 
 
