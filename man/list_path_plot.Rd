@@ -9,4 +9,3 @@
 A matrix of gene expression for pathways given by the user.
 }
 \keyword{internal}
-

@@ -20,4 +20,3 @@ average creates a matrix with a summarized value for each pathway
 \examples{
 score_mean<-average(dataFilt=tumo[,1:2],path)
 }
-

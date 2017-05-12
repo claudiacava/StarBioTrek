@@ -20,4 +20,3 @@ GE_matrix creates a matrix of mean gene expression for pathways given by the use
 \examples{
 list_path_plot<-matrix_plot(DataMatrix=tumo[,1:2],pathway=path)
 }
-

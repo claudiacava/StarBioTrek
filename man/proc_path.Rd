@@ -15,4 +15,3 @@ dataframe with human pathway data
 \description{
 getKEGGdata creates a data frame with human KEGG pathway. Columns are the pathways and rows the genes inside those pathway
 }
-

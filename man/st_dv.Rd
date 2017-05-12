@@ -20,4 +20,3 @@ st_dv creates a matrix with standard deviation for pathways
 \examples{
 stand_dev<-st_dv(DataMatrix=tumo[,1:2],pathway=path)
 }
-

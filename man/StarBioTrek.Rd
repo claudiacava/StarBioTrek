@@ -14,4 +14,3 @@ The functions you're likely to need from \pkg{StarBioTrek} is
 Otherwise refer to the vignettes to see
 how to format the documentation.
 }
-

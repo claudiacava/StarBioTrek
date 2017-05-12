@@ -20,4 +20,3 @@ euc_dist_crtlk creates a matrix with euclidean distance for pairwise pathways
 \examples{
 score_euc_dista<-euc_dist_crtlk(dataFilt=tumo[,1:2],path)
 }
-

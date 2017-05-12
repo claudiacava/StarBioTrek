@@ -21,4 +21,3 @@ list_path_net creates a list of interacting genes for each human pathway.
 lista_netw<-path_net(pathway=path,data=netw)
 list_path<-list_path_net(lista_net=lista_netw,pathway=path)
 }
-

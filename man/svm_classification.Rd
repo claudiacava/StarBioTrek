@@ -26,4 +26,3 @@ nf <- 60
 res_class<-svm_classification(TCGA_matrix=score_euc_dist,nfs=nf,
 normal=colnames(norm[,1:10]),tumour=colnames(tumo[,1:10]))
 }
-

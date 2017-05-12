@@ -97,6 +97,7 @@ return(mer)
 }
 
 select_path_gly<-function(Glybio_met){ 
+  species<-c("- Homo sapiens (human)") 
 ac<-paste("N-Glycan biosynthesis", species)
 ad<-paste("Various types of N-glycan biosynthesis", species)
 ae<-paste("Mucin type O-Glycan biosynthesis", species)

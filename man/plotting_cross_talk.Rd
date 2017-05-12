@@ -22,4 +22,3 @@ plotting_matrix creates a matrix of gene expression for pathways given by the us
 \examples{
 mt<-plotting_cross_talk(DataMatrix=tumo[,1:2],pathway=path,path_matrix=list_path_plot)
 }
-

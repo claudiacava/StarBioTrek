@@ -18,4 +18,3 @@ getKEGGdata creates a data frame with human KEGG pathway. Columns are the pathwa
 \examples{
 path<-getKEGGdata(KEGG_path="Transcript")
 }
-

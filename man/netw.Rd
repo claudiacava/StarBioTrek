@@ -9,4 +9,3 @@
 network data
 }
 \keyword{internal}
-

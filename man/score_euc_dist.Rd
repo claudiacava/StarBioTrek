@@ -9,4 +9,3 @@
 Score Matrix of pairwise pathway using euclidean distance
 }
 \keyword{internal}
-

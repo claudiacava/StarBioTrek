@@ -25,4 +25,3 @@ Network category can be filtered among: physical interactions, co-localization, 
 organism="Saccharomyces_cerevisiae"
 netw<-getNETdata(network="SHpd",organism)
 }
-

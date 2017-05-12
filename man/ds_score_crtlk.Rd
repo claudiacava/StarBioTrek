@@ -20,4 +20,3 @@ ds_score_crtlk creates a matrix with  discriminating score for pathways
 \examples{
 cross_talk_st_dv<-ds_score_crtlk(dataFilt=tumo[,1:2],pathway=path)
 }
-

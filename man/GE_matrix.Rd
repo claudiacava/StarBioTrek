@@ -20,4 +20,3 @@ GE_matrix creates a matrix of gene expression for pathways given by the user.
 \examples{
 list_path_gene<-GE_matrix(DataMatrix=tumo[,1:2],pathway=path)
 }
-

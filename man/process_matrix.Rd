@@ -17,4 +17,3 @@ a gene expression matrix for case study 1
 \description{
 processing gene expression matrix
 }
-

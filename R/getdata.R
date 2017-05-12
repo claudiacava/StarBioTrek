@@ -30,12 +30,12 @@ if (KEGG_path=="Carb_met") {
     a<-c[[2]]
   }
   if (KEGG_path=="Gly_bio_met") {
-    mer<-select_path_gly(Glybio_met)
+    mer<-select_path_gly(Glybio_met) 
     c<-proc_path(mer)
     a<-c[[2]]
   }
   if (KEGG_path=="Cof_vit_met") {
-    mer<-select_path_gly(Cofa_vita_met)
+    mer<-select_path_cofa(Cofa_vita_met)
     c<-proc_path(mer)
     a<-c[[2]]
   }

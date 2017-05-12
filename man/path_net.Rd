@@ -20,4 +20,3 @@ path_net creates a list of network data for each human pathway. The network data
 \examples{
 lista_net<-path_net(pathway=path,data=netw)
 }
-
