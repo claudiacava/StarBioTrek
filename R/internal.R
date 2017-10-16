@@ -523,3 +523,19 @@ list_pathkegg<-list(pathway.codes,b)
 return(list_pathkegg)
 }
 
+
+
+delete.NULLs  <-  function(xlist){   # delele null/empty entries in a list
+  xlist[unlist(lapply(xlist, nrow) != 0)]
+}
+
+
+
+
+
+
+
+
+
+
+

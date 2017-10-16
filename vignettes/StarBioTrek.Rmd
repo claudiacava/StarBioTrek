@@ -537,10 +537,26 @@ cross_talk_st_dv<-ds_score_crtlk(dataFilt=tumo[,1:2],pathway=path)
 Given the substantial difference in the activities of many pathways between two classes (e.g. normal and cancer), we examined the effectiveness to classify the classes based on their pairwise pathway profiles. 
 This function is used to find the interacting pathways that are altered in a particular pathology in terms of Area Under Curve (AUC).AUC was estimated by cross-validation method (k-fold cross-validation, k=10).It randomly selected some fraction of TCGA data (e.g. nf= 60; 60% of original dataset) to form the training set and then assigned the rest of the points to the testing set (40% of original dataset). For each pairwise pathway the user can obtain using the methods mentioned above a score matrix ( e.g.dev_std_crtlk ) and can  focus on the pairs of pathways able to differentiate a particular subtype with respect to the normal type.
 
-```{r, eval = TRUE}
+```{r, eval = FALSE}
 nf <- 60
 res_class<-svm_classification(TCGA_matrix=score_euc_dist[1:2,],nfs=nf,normal=colnames(norm[,1:12]),tumour=colnames(tumo[,1:12]))
+```
 
+```{r, fig.width=6, fig.height=4, echo=FALSE, fig.align="center"}
+library(png)
+library(grid)
+img <- readPNG("plot_class.png")
+grid.raster(img)
+```
+
+
+
+# `IPPI`: Driver genes for each pathway
+
+The function `IPPI`, using pathways and networks data, calculates the driver genes for each pathway. Please see Cava et al. BMC Genomics 2017.  
+
+```{r, eval = TRUE}
+DRIVER_SP<-IPPI(patha=path,netwa=netw)
 ```
 
 

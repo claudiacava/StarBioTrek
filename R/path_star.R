@@ -449,6 +449,9 @@ auc.df<-list()
 svm_model_after_tune_COMPL<-list()
 for( k in 2: ncol(training)){
   print(colnames(training)[k])
+  
+
+  
   svm_tune <- tune(svm, train.x=x, train.y=y, 
                    kernel="radial", ranges=list(cost=10^(-1:2), gamma=c(.5,1,2)),cross=10)
   #print(svm_tune)
@@ -497,4 +500,71 @@ for( k in 2: ncol(training)){
 names(auc.df) <- colnames(z)
 return(auc.df)
 }
+
+
+
+
+#' @title Multilayer analysis Cava et al. BMC Genomics 2017
+#' @description IPPI function takes as input pathway and network data in order to select genes with central role in that pathway. Please see Cava et al. 2017 BMC Genomics 
+#' @param patha pathway matrix Please see example path for format
+#' @param netwa a dataframe Please see example path for format netw
+#' @export
+#' @importFrom SpidermiR SpidermiRanalyze_degree_centrality 
+#' @return a list with driver genes for each pathway 
+#' @examples
+#' DRIVER_SP<-IPPI(patha=path,netwa=netw)
+IPPI<-function(patha,netwa){
+  topwhol_net<-SpidermiRanalyze_degree_centrality(netwa)
+  colnames(netwa)<-c("m_shar_pro","m2_shar_pro")
+  m<-c(netwa$m_shar_pro)
+  m2<-c(netwa$m2_shar_pro)
+  s<-c(m,m2)
+  fr<- unique(s)
+  lista_nett<-path_net(pathway=patha,data=netwa)
+  lista_netw<- delete.NULLs(lista_nett)
+  a<-intersect(names(lista_netw),colnames(patha))
+  pat<-patha[,a]
+  list_path<-list_path_net(lista_net=lista_netw,pathway=pat)
+  topwhol=list()
+  df=list()
+  for (i in 1:length(lista_netw)){
+    #  for (i in 1:4){
+    #i=1
+    print(paste(i,"INTERACTION",names(lista_netw)[i]))
+    #if(is.data.frame(lista_net[[i]])){
+    #if(nrow(lista_net[[i]])){
+    topwhol[[i]]<-SpidermiRanalyze_degree_centrality(lista_netw[[i]])
+    topwhol[[i]]<-topwhol[[i]][which(topwhol[[i]]$Freq!=0),]
+    topwhol[[i]]$topwhol_net<-""
+    topwhol[[i]]$wi<-""
+    topwhol[[i]]$d_expected_path<-""
+    topwhol[[i]]$driver<-""
+    p=list()
+    for (j in 1:nrow(topwhol_net)){
+      #j=644
+      if (length(intersect(topwhol_net[j,1],topwhol[[i]]$dfer))!=0)  {
+        d_expected_path<-topwhol_net[j,2]*(length(list_path[[i]]))/(length(fr))
+        
+        index<- which(as.character(topwhol_net[j,1])==as.character(topwhol[[i]]$dfer))
+        sa<-topwhol[[i]][which(as.character(topwhol_net[j,1])==as.character(topwhol[[i]]$dfer)),]
+        wi<-sa$Freq/length(list_path[[i]])
+        #wi=sa$Freq-d_expected_path
+        topwhol[[i]][index,3]<-topwhol_net[j,2]
+        topwhol[[i]][index,4]<-wi
+        topwhol[[i]][index,5]<-d_expected_path
+        if(d_expected_path<wi){
+          topwhol[[i]][index,6]<-"driver"
+        }
+      }
+      if (length(intersect(topwhol_net[j,1],topwhol[[i]]$dfer))==0)  {
+        df[[i]]<-topwhol_net[j,1]
+      } 
+    }
+  }   
+  for (k in 1:length(lista_netw)){
+    names(topwhol)[k]<-names(lista_netw)[k]
+  }
+  return(topwhol)
+}
+
 
